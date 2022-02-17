@@ -13,7 +13,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
 
   let(:source) do
     source = OpenStruct.new
-    source.name = 'Facebook - Confortale Colchões'
+    source.name = source_name
 
     source
   end
@@ -34,6 +34,7 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
     lead
   end
 
+  let(:source_name) { 'Facebook - Confortale Colchões' }
 
   context 'when product contains "Jabaquara"' do
     let(:product_name) { '[CV] [Jabaquara]' }
@@ -64,6 +65,48 @@ RSpec.describe F1SalesCustom::Hooks::Lead do
 
     it 'returns source name' do
       expect(described_class.switch_source(lead)).to eq('Facebook - Confortale Colchões - Jurubatuba')
+    end
+  end
+
+  context 'when came from simmons' do
+    let(:product_name) { '*Exclusivas I Titanium/22 I 31/03/2022' }
+
+    before { lead.message = message }
+
+    context 'when message contains "avenida jabaquara 938"' do
+      let(:source_name) { 'Simmons - Facebook' }
+      let(:message) { 'conditional_question_2: São Paulo; conditional_question_3: confortale-avenida jabaquara 938; conditional_question_1: São Paulo' }
+
+      it 'returns source name' do
+        expect(described_class.switch_source(lead)).to eq('Simmons - Facebook - Jabaquara')
+      end
+    end
+
+    context 'when message contains "avenida portugal 1841"' do
+      let(:source_name) { 'Simmons - Widgrid' }
+      let(:message) { 'Simmons - ESC - confortale-avenida portugal 1841' }
+
+      it 'returns source name' do
+        expect(described_class.switch_source(lead)).to eq('Simmons - Widgrid - Santo André')
+      end
+    end
+
+    context 'when message contains "avenida cruzeiro do sul 1100"' do
+      let(:source_name) { 'Simmons - Facebook' }
+      let(:message) { 'conditional_question_1: São Paulo; conditional_question_2: São Paulo; conditional_question_3: confortale-avenida cruzeiro do sul 1100' }
+
+      it 'returns source name' do
+        expect(described_class.switch_source(lead)).to eq('Simmons - Facebook - Interlagos')
+      end
+    end
+
+    context 'when message contains "rua jurubatuba 707"' do
+      let(:source_name) { 'Simmons - Facebook' }
+      let(:message) { 'conditional_question_1: São Paulo; conditional_question_2: São Bernardo do Campo; conditional_question_3: confortale-rua jurubatuba 707' }
+
+      it 'returns source name' do
+        expect(described_class.switch_source(lead)).to eq('Simmons - Facebook - Jurubatuba')
+      end
     end
   end
 end

@@ -10,14 +10,15 @@ module Confortalecolchoes
     def self.switch_source(lead)
       source_name = lead.source ? lead.source.name : ''
       product_name = lead.product.name.downcase
+      message = lead.message || ''
 
-      if product_name.include?('santo andré')
+      if product_name.include?('santo andré') || message.include?('avenida portugal 1841')
         "#{source_name} - Santo André"
-      elsif product_name.include?('interlagos')
+      elsif product_name.include?('interlagos') || message.include?('avenida cruzeiro do sul 1100')
         "#{source_name} - Interlagos"
-      elsif product_name.include?('jabaquara')
+      elsif product_name.include?('jabaquara') || message.include?('avenida jabaquara 938')
         "#{source_name} - Jabaquara"
-      elsif product_name.include?('jurubatuba')
+      elsif product_name.include?('jurubatuba') || message.include?('rua jurubatuba 707')
         "#{source_name} - Jurubatuba"
       else
         lead.source.name
